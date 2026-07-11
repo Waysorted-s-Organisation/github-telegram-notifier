@@ -42,6 +42,19 @@ test("allows human events", () => {
   assert.equal(reason, null);
 });
 
+test("ignores low-signal events in balanced mode", () => {
+  const reason = shouldIgnoreEvent(
+    "watch",
+    {
+      action: "started",
+      sender: { login: "alice" },
+    },
+    { includeAllBranches: true, skipBots: true, noiseFilterMode: "balanced" }
+  );
+
+  assert.match(reason, /Ignoring low-signal event/);
+});
+
 test("parses multiple Telegram chat IDs", () => {
   const previousMulti = process.env.TELEGRAM_CHAT_IDS;
   const previousSingle = process.env.TELEGRAM_CHAT_ID;

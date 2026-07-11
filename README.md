@@ -62,7 +62,10 @@ TELEGRAM_BOT_TOKEN=replace_me
 TELEGRAM_CHAT_IDS=replace_me,replace_me_too
 INCLUDE_ALL_BRANCHES=false
 SKIP_BOTS=true
+NOISE_FILTER_MODE=balanced
 ```
+
+`NOISE_FILTER_MODE=balanced` keeps code/review/release/deploy/check/comment activity and suppresses obvious GitHub admin noise. Set `NOISE_FILTER_MODE=off` if you truly want every single event delivered.
 
 ## GitHub webhook
 

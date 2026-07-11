@@ -128,6 +128,70 @@ function formatPingEvent(payload) {
   };
 }
 
+function formatIssueCommentEvent(payload) {
+  const issue = payload.issue;
+  const repo = payload.repository.full_name;
+  return {
+    text:
+      `💬 <b>Issue comment ${escapeHtml(payload.action)}</b>\n` +
+      `<b>Repo:</b> <code>${escapeHtml(repo)}</code>\n` +
+      `<b>Issue:</b> <a href="${issue.html_url}">#${issue.number} ${escapeHtml(issue.title)}</a>\n` +
+      `<b>By:</b> ${escapeHtml(payload.comment?.user?.login || payload.sender?.login || "Unknown")}`,
+  };
+}
+
+function formatIssuesEvent(payload) {
+  const issue = payload.issue;
+  const repo = payload.repository.full_name;
+  return {
+    text:
+      `📝 <b>Issue ${escapeHtml(payload.action)}</b>\n` +
+      `<b>Repo:</b> <code>${escapeHtml(repo)}</code>\n` +
+      `<b>Issue:</b> <a href="${issue.html_url}">#${issue.number} ${escapeHtml(issue.title)}</a>\n` +
+      `<b>By:</b> ${escapeHtml(issue.user?.login || payload.sender?.login || "Unknown")}`,
+  };
+}
+
+function formatReleaseEvent(payload) {
+  const release = payload.release;
+  const repo = payload.repository.full_name;
+  return {
+    text:
+      `🏷️ <b>Release ${escapeHtml(payload.action)}</b>\n` +
+      `<b>Repo:</b> <code>${escapeHtml(repo)}</code>\n` +
+      `<b>Name:</b> <a href="${release.html_url}">${escapeHtml(release.name || release.tag_name)}</a>\n` +
+      `<b>Tag:</b> <code>${escapeHtml(release.tag_name)}</code>`,
+  };
+}
+
+function formatDeploymentStatusEvent(payload) {
+  const deployment = payload.deployment;
+  const status = payload.deployment_status;
+  const repo = payload.repository.full_name;
+  return {
+    text:
+      `🚢 <b>Deployment ${escapeHtml(status.state || payload.action || "updated")}</b>\n` +
+      `<b>Repo:</b> <code>${escapeHtml(repo)}</code>\n` +
+      `<b>Ref:</b> <code>${escapeHtml(deployment.ref || "unknown")}</code>\n` +
+      (status.environment ? `<b>Env:</b> ${escapeHtml(status.environment)}\n` : "") +
+      (status.target_url ? `<a href="${status.target_url}">Open deployment</a>` : ""),
+  };
+}
+
+function formatCheckRunEvent(payload) {
+  const checkRun = payload.check_run;
+  const repo = payload.repository.full_name;
+  return {
+    text:
+      `🧪 <b>Check run ${escapeHtml(payload.action)}</b>\n` +
+      `<b>Repo:</b> <code>${escapeHtml(repo)}</code>\n` +
+      `<b>Name:</b> ${escapeHtml(checkRun.name)}\n` +
+      `<b>Status:</b> ${escapeHtml(checkRun.status || "unknown")}\n` +
+      `<b>Conclusion:</b> ${escapeHtml(checkRun.conclusion || "pending")}\n` +
+      `<a href="${checkRun.html_url}">Open check</a>`,
+  };
+}
+
 function formatGenericEvent(eventName, payload) {
   const repo = payload.repository?.full_name || payload.organization?.login || "unknown";
   const action = payload.action || "updated";
@@ -171,6 +235,16 @@ function buildMessage(eventName, payload) {
       return formatDeleteEvent(payload);
     case "repository":
       return formatRepositoryEvent(payload);
+    case "issues":
+      return formatIssuesEvent(payload);
+    case "issue_comment":
+      return formatIssueCommentEvent(payload);
+    case "release":
+      return formatReleaseEvent(payload);
+    case "deployment_status":
+      return formatDeploymentStatusEvent(payload);
+    case "check_run":
+      return formatCheckRunEvent(payload);
     case "ping":
       return formatPingEvent(payload);
     default:

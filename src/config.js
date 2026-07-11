@@ -47,6 +47,11 @@ function readNumberEnv(name, fallback) {
   return parsed;
 }
 
+function readStringEnv(name, fallback) {
+  const value = process.env[name];
+  return value === undefined ? fallback : value;
+}
+
 function getConfig() {
   return {
     port: readNumberEnv("PORT", 3000),
@@ -55,6 +60,7 @@ function getConfig() {
     telegramChatIds: readChatIdsEnv(),
     includeAllBranches: readBooleanEnv("INCLUDE_ALL_BRANCHES", false),
     skipBots: readBooleanEnv("SKIP_BOTS", true),
+    noiseFilterMode: readStringEnv("NOISE_FILTER_MODE", "balanced"),
     nodeEnv: process.env.NODE_ENV || "development",
   };
 }

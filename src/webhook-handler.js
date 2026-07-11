@@ -1,5 +1,6 @@
 const { buildMessage } = require("./formatters");
 const { getBranchName, isBotSender, verifySignature } = require("./github");
+const { shouldIgnoreForNoise } = require("./noise-filter");
 const { sendTelegramMessages } = require("./telegram");
 
 function readHeader(headers, key) {
@@ -29,6 +30,11 @@ function shouldIgnoreEvent(eventName, payload, config) {
 
   if (config.skipBots && isBotSender(payload.sender?.login || "")) {
     return `Ignoring bot sender: ${payload.sender.login}`;
+  }
+
+  const noiseReason = shouldIgnoreForNoise(eventName, payload, config.noiseFilterMode);
+  if (noiseReason) {
+    return noiseReason;
   }
 
   return null;
