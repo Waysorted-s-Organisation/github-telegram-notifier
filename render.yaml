@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: waysorted-github-telegram-notifier
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: GITHUB_WEBHOOK_SECRET
+        generateValue: true
+      - key: INCLUDE_ALL_BRANCHES
+        value: "false"
+      - key: SKIP_BOTS
+        value: "true"
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false

@@ -1,0 +1,27 @@
+{
+  "name": "waysorted-github-telegram-notifier",
+  "version": "1.0.0",
+  "description": "Organization-level GitHub webhook service that sends repository updates to Telegram.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test",
+    "get-chat-id": "node scripts/get-chat-id.js"
+  },
+  "keywords": [
+    "github",
+    "telegram",
+    "webhook",
+    "notifications"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0"
+  }
+}
