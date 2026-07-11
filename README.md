@@ -106,8 +106,24 @@ Required app settings:
 - `GITHUB_WEBHOOK_SECRET`
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_IDS`
+- `TELEGRAM_WEBHOOK_SECRET`
 - `INCLUDE_ALL_BRANCHES`
 - `SKIP_BOTS`
+- `NOISE_FILTER_MODE`
+
+## Self-serve Telegram subscriptions
+
+Share the bot link:
+
+- `https://t.me/waysortedBot`
+
+Any user can open the bot and send:
+
+- `/start` or `/subscribe` to subscribe
+- `/status` to check subscription
+- `/unsubscribe` to stop updates
+
+Subscriber state is stored in Azure Table Storage, so you no longer have to manually collect chat IDs.
 
 After deployment, use the public function URL path `/github/webhook` as the GitHub organization webhook target.
 

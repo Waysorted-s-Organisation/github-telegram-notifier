@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 
 const { shouldIgnoreEvent } = require("../src/app");
 const { readChatIdsEnv } = require("../src/config");
+const { createTelegramUpdateProcessor } = require("../src/telegram-update-handler");
 
 test("ignores non-default branch pushes by default", () => {
   const reason = shouldIgnoreEvent(
@@ -79,4 +80,41 @@ test("falls back to single Telegram chat ID", () => {
 
   process.env.TELEGRAM_CHAT_IDS = previousMulti;
   process.env.TELEGRAM_CHAT_ID = previousSingle;
+});
+
+test("telegram /subscribe stores a subscriber", async () => {
+  const calls = [];
+  global.fetch = async (_url, options) => {
+    calls.push(JSON.parse(options.body));
+    return {
+      ok: true,
+      json: async () => ({ ok: true }),
+    };
+  };
+
+  const subscribers = new Set();
+  const processor = createTelegramUpdateProcessor(
+    { telegramBotToken: "token", telegramWebhookSecret: "secret" },
+    {
+      subscribe: async (chat) => subscribers.add(String(chat.id)),
+      unsubscribe: async (chatId) => subscribers.delete(String(chatId)),
+      isSubscribed: async (chatId) => subscribers.has(String(chatId)),
+    }
+  );
+
+  const result = await processor({
+    headers: { "x-telegram-bot-api-secret-token": "secret" },
+    body: Buffer.from(
+      JSON.stringify({
+        message: {
+          chat: { id: 123, type: "private" },
+          text: "/subscribe",
+        },
+      })
+    ),
+  });
+
+  assert.equal(result.status, 200);
+  assert.ok(subscribers.has("123"));
+  assert.equal(calls[0].chat_id, 123);
 });

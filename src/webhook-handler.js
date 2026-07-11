@@ -40,7 +40,11 @@ function shouldIgnoreEvent(eventName, payload, config) {
   return null;
 }
 
-function createWebhookProcessor(config) {
+function uniqueChatIds(staticChatIds, dynamicChatIds) {
+  return [...new Set([...(staticChatIds || []), ...(dynamicChatIds || [])])];
+}
+
+function createWebhookProcessor(config, subscriberStore) {
   const processedDeliveries = new Set();
   const processedDeliveryOrder = [];
   const maxRememberedDeliveries = 1000;
@@ -74,9 +78,12 @@ function createWebhookProcessor(config) {
     const message = buildMessage(eventName, payload);
 
     try {
+      const dynamicChatIds = subscriberStore ? await subscriberStore.listChatIds() : [];
+      const chatIds = uniqueChatIds(config.telegramChatIds, dynamicChatIds);
+
       await sendTelegramMessages({
         botToken: config.telegramBotToken,
-        chatIds: config.telegramChatIds,
+        chatIds,
         text: message.text,
       });
 

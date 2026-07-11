@@ -55,9 +55,11 @@ function readStringEnv(name, fallback) {
 function getConfig() {
   return {
     port: readNumberEnv("PORT", 3000),
+    azureWebJobsStorage: process.env.AzureWebJobsStorage || "",
     githubWebhookSecret: readRequiredEnv("GITHUB_WEBHOOK_SECRET"),
     telegramBotToken: readRequiredEnv("TELEGRAM_BOT_TOKEN"),
     telegramChatIds: readChatIdsEnv(),
+    telegramWebhookSecret: readStringEnv("TELEGRAM_WEBHOOK_SECRET", ""),
     includeAllBranches: readBooleanEnv("INCLUDE_ALL_BRANCHES", false),
     skipBots: readBooleanEnv("SKIP_BOTS", true),
     noiseFilterMode: readStringEnv("NOISE_FILTER_MODE", "balanced"),

@@ -1,12 +1,12 @@
-const { createWebhookProcessor } = require("../src/webhook-handler");
+const { createTelegramUpdateProcessor } = require("../src/telegram-update-handler");
 const { getConfig } = require("../src/config");
 const { createSubscriberStore } = require("../src/subscriber-store");
 
 const config = getConfig();
 const subscriberStore = createSubscriberStore(config);
-const processor = createWebhookProcessor(config, subscriberStore);
+const processor = createTelegramUpdateProcessor(config, subscriberStore);
 
-module.exports = async function webhook(context, req) {
+module.exports = async function telegramWebhook(context, req) {
   const result = await processor({
     headers: req.headers || {},
     body: req.rawBody || req.body || "",
