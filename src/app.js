@@ -1,7 +1,7 @@
 const express = require("express");
 const { buildMessage } = require("./formatters");
 const { getBranchName, isBotSender, verifySignature } = require("./github");
-const { sendTelegramMessage } = require("./telegram");
+const { sendTelegramMessages } = require("./telegram");
 
 function shouldIgnoreEvent(eventName, payload, config) {
   if (eventName === "push") {
@@ -64,9 +64,9 @@ function createApp(config) {
       }
 
       try {
-        await sendTelegramMessage({
+        await sendTelegramMessages({
           botToken: config.telegramBotToken,
-          chatId: config.telegramChatId,
+          chatIds: config.telegramChatIds,
           text: message.text,
         });
         if (deliveryId) {

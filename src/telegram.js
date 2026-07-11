@@ -20,6 +20,22 @@ async function sendTelegramMessage({ botToken, chatId, text }) {
   return response.json();
 }
 
+async function sendTelegramMessages({ botToken, chatIds, text }) {
+  const results = await Promise.allSettled(
+    chatIds.map((chatId) => sendTelegramMessage({ botToken, chatId, text }))
+  );
+
+  const failures = results.filter((result) => result.status === "rejected");
+  if (failures.length > 0) {
+    throw new Error(
+      failures.map((result) => result.reason?.message || "Unknown Telegram delivery failure").join("; ")
+    );
+  }
+
+  return results.map((result) => result.value);
+}
+
 module.exports = {
   sendTelegramMessage,
+  sendTelegramMessages,
 };

@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const { shouldIgnoreEvent } = require("../src/app");
+const { readChatIdsEnv } = require("../src/config");
 
 test("ignores non-default branch pushes by default", () => {
   const reason = shouldIgnoreEvent(
@@ -39,4 +40,30 @@ test("allows human events", () => {
   );
 
   assert.equal(reason, null);
+});
+
+test("parses multiple Telegram chat IDs", () => {
+  const previousMulti = process.env.TELEGRAM_CHAT_IDS;
+  const previousSingle = process.env.TELEGRAM_CHAT_ID;
+
+  process.env.TELEGRAM_CHAT_IDS = "123, 456 ,789";
+  delete process.env.TELEGRAM_CHAT_ID;
+
+  assert.deepEqual(readChatIdsEnv(), ["123", "456", "789"]);
+
+  process.env.TELEGRAM_CHAT_IDS = previousMulti;
+  process.env.TELEGRAM_CHAT_ID = previousSingle;
+});
+
+test("falls back to single Telegram chat ID", () => {
+  const previousMulti = process.env.TELEGRAM_CHAT_IDS;
+  const previousSingle = process.env.TELEGRAM_CHAT_ID;
+
+  delete process.env.TELEGRAM_CHAT_IDS;
+  process.env.TELEGRAM_CHAT_ID = "123";
+
+  assert.deepEqual(readChatIdsEnv(), ["123"]);
+
+  process.env.TELEGRAM_CHAT_IDS = previousMulti;
+  process.env.TELEGRAM_CHAT_ID = previousSingle;
 });

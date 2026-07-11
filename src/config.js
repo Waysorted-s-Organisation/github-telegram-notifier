@@ -6,6 +6,27 @@ function readRequiredEnv(name) {
   return value;
 }
 
+function readChatIdsEnv() {
+  const multiValue = process.env.TELEGRAM_CHAT_IDS;
+  const singleValue = process.env.TELEGRAM_CHAT_ID;
+  const rawValue = multiValue || singleValue;
+
+  if (!rawValue) {
+    throw new Error("Missing required environment variable: TELEGRAM_CHAT_IDS or TELEGRAM_CHAT_ID");
+  }
+
+  const chatIds = rawValue
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  if (chatIds.length === 0) {
+    throw new Error("No valid Telegram chat IDs were provided");
+  }
+
+  return chatIds;
+}
+
 function readBooleanEnv(name, fallback = false) {
   const value = process.env[name];
   if (value === undefined) {
@@ -31,7 +52,7 @@ function getConfig() {
     port: readNumberEnv("PORT", 3000),
     githubWebhookSecret: readRequiredEnv("GITHUB_WEBHOOK_SECRET"),
     telegramBotToken: readRequiredEnv("TELEGRAM_BOT_TOKEN"),
-    telegramChatId: readRequiredEnv("TELEGRAM_CHAT_ID"),
+    telegramChatIds: readChatIdsEnv(),
     includeAllBranches: readBooleanEnv("INCLUDE_ALL_BRANCHES", false),
     skipBots: readBooleanEnv("SKIP_BOTS", true),
     nodeEnv: process.env.NODE_ENV || "development",
@@ -40,4 +61,5 @@ function getConfig() {
 
 module.exports = {
   getConfig,
+  readChatIdsEnv,
 };

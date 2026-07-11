@@ -34,7 +34,7 @@ npm install
 npm run get-chat-id
 ```
 
-5. Put the chat ID in `.env`.
+5. Put the chat ID in `.env`. For multiple recipients, use a comma-separated list in `TELEGRAM_CHAT_IDS`.
 
 6. Set a webhook secret:
 
@@ -55,7 +55,7 @@ PORT=3000
 NODE_ENV=development
 GITHUB_WEBHOOK_SECRET=replace_me
 TELEGRAM_BOT_TOKEN=replace_me
-TELEGRAM_CHAT_ID=replace_me
+TELEGRAM_CHAT_IDS=replace_me,replace_me_too
 INCLUDE_ALL_BRANCHES=false
 SKIP_BOTS=true
 ```
