@@ -21,7 +21,7 @@ test("formats push events", () => {
   assert.ok(message.text.includes("fix: improve webhook"));
 });
 
-test("returns null for unsupported events", () => {
+test("formats issues events", () => {
   const message = buildMessage("issues", {
     action: "opened",
     repository: { full_name: "acme/repo", html_url: "https://github.com/acme/repo" },
@@ -33,7 +33,7 @@ test("returns null for unsupported events", () => {
     },
     sender: { login: "alice" },
   });
-  assert.ok(message.text.includes("issues opened"));
+  assert.ok(message.text.includes("Issue opened"));
   assert.ok(message.text.includes("acme/repo"));
 });
 
