@@ -22,6 +22,11 @@ test("formats push events", () => {
 });
 
 test("returns null for unsupported events", () => {
-  const message = buildMessage("issues", {});
-  assert.equal(message, null);
+  const message = buildMessage("issues", {
+    action: "opened",
+    repository: { full_name: "acme/repo", html_url: "https://github.com/acme/repo" },
+    sender: { login: "alice" },
+  });
+  assert.ok(message.text.includes("issues opened"));
+  assert.ok(message.text.includes("acme/repo"));
 });

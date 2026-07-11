@@ -69,7 +69,9 @@ Add an organization webhook in GitHub:
 - Secret: same value as `GITHUB_WEBHOOK_SECRET`
 - SSL verification: enabled
 
-Subscribe to these events:
+Best option: choose GitHub's broad subscription option so the webhook receives every event it can send for the org. The app now has custom formatting for common engineering events and a generic fallback for everything else.
+
+If you use manual event selection, include at least:
 
 - Pushes
 - Pull requests
@@ -85,6 +87,6 @@ This repo includes `render.yaml` and a `Dockerfile`.
 
 1. Push the repo to GitHub.
 2. In Render, create a Blueprint from the repository.
-3. Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`.
+3. Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_IDS`.
 4. Deploy.
 5. Copy the public service URL and use `/github/webhook` as the GitHub org webhook path.

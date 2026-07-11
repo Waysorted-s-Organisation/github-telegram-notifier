@@ -128,6 +128,33 @@ function formatPingEvent(payload) {
   };
 }
 
+function formatGenericEvent(eventName, payload) {
+  const repo = payload.repository?.full_name || payload.organization?.login || "unknown";
+  const action = payload.action || "updated";
+  const actor =
+    payload.sender?.login ||
+    payload.member?.login ||
+    payload.installation?.account?.login ||
+    "Unknown";
+  const possibleUrl =
+    payload.html_url ||
+    payload.repository?.html_url ||
+    payload.pull_request?.html_url ||
+    payload.issue?.html_url ||
+    payload.release?.html_url ||
+    payload.workflow_run?.html_url ||
+    payload.deployment_status?.target_url ||
+    payload.check_run?.html_url;
+
+  return {
+    text:
+      `🔔 <b>${escapeHtml(eventName)} ${escapeHtml(action)}</b>\n` +
+      `<b>Repo/Org:</b> <code>${escapeHtml(repo)}</code>\n` +
+      `<b>By:</b> ${escapeHtml(actor)}` +
+      (possibleUrl ? `\n<a href="${possibleUrl}">Open details</a>` : ""),
+  };
+}
+
 function buildMessage(eventName, payload) {
   switch (eventName) {
     case "push":
@@ -147,7 +174,7 @@ function buildMessage(eventName, payload) {
     case "ping":
       return formatPingEvent(payload);
     default:
-      return null;
+      return formatGenericEvent(eventName, payload);
   }
 }
 
