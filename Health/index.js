@@ -1,0 +1,9 @@
+module.exports = async function health(context) {
+  context.res = {
+    status: 200,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+    },
+    body: { ok: true },
+  };
+};

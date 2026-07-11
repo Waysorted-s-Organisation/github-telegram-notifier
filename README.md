@@ -2,6 +2,8 @@
 
 Organization-level GitHub webhook service that sends repository activity to Telegram in real time.
 
+Primary deployment target: Azure Functions HTTP triggers on the free consumption path.
+
 ## What it sends
 
 - Push events
@@ -48,6 +50,8 @@ openssl rand -hex 32
 npm start
 ```
 
+For Azure Functions local tooling, create a `local.settings.json` file separately if you want to run under the Functions host. The existing Express server remains available for local smoke testing.
+
 ## Environment variables
 
 ```env
@@ -80,6 +84,29 @@ If you use manual event selection, include at least:
 - Branch or tag creation
 - Branch or tag deletion
 - Repositories
+
+## Azure Functions deployment
+
+This repo includes Azure Functions entrypoints for:
+
+- `POST /github/webhook`
+- `GET /health`
+
+Suggested hosting:
+
+- Azure Functions Flex Consumption or Consumption plan
+- Node.js 22
+- Anonymous HTTP trigger access
+
+Required app settings:
+
+- `GITHUB_WEBHOOK_SECRET`
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_IDS`
+- `INCLUDE_ALL_BRANCHES`
+- `SKIP_BOTS`
+
+After deployment, use the public function URL path `/github/webhook` as the GitHub organization webhook target.
 
 ## Render deployment
 
